@@ -1,65 +1,71 @@
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.StringTokenizer;
+
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	static boolean visited[];
-	static int[][] gragh = new int[1001][1001];
-	static int N,M,V;
-	static ArrayDeque<Integer> queue = new ArrayDeque<>();
+	static int[][] graph;
+	static boolean[] isdVisited;
+	static boolean[] isbVisited;
+	 static StringBuilder sb = new StringBuilder();	
 	
-	static void dfs(int idx) {
+	public static void main(String args[]) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 		
-		visited[idx] = true;
-		System.out.print(idx+" ");
-		for(int i=1;i<=N;i++) {
-			if(!visited[i] && gragh[idx][i] == 1) {
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		int V = Integer.parseInt(st.nextToken());
+		
+		graph = new int[N+1][N+1];
+		isdVisited = new boolean[N+1];
+		isbVisited = new boolean[N+1];
+		
+		
+		for(int i=0;i<M;i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			graph[a][b] = graph[b][a] = 1;
+		}
+		
+		dfs(V);
+		System.out.println(sb);
+		 sb.setLength(0);
+		bfs(V);
+		System.out.println(sb);
+	}
+	
+	static void dfs(int pos) {
+		isdVisited[pos] = true;
+		sb.append(pos).append(' ');
+		
+		for(int i=1;i<graph.length;i++) {
+			if(graph[pos][i] == 1 && !isdVisited[i]) {
 				dfs(i);
 			}
 		}
 	}
 	
-	static void bfs(int idx) {
-		visited[idx] = true;
+	static void bfs(int start) {
+		Queue<Integer> queue = new ArrayDeque<>();
+		isbVisited[start] = true;
+		queue.offer(start);
 		
-		queue.addLast(idx);
-	
-		while(!queue.isEmpty()) {
-			int bfsidx = queue.pollFirst();
-			System.out.print(bfsidx+" ");
-			for(int i=1;i<=N;i++) {
-				if(!visited[i] && gragh[bfsidx][i] == 1) {
-					queue.addLast(i);
-					visited[i] = true;
-					
+		while(!queue.isEmpty()){
+			int cur = queue.poll();
+			sb.append(cur).append(" ");
+			
+			for(int i = 1;i<graph.length;i++) {
+				if(graph[cur][i] == 1 && !isbVisited[i]) {
+					isbVisited[i] = true;
+					queue.offer(i);
 				}
 			}
+			
 		}
-	}
-	
-	
-	
-	public static void main(String[] args) throws IOException {
-		BufferedReader br =new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		V = Integer.parseInt(st.nextToken());
-		
-		for(int i=0;i<M;i++) {
-			st = new StringTokenizer(br.readLine());
-			int start = Integer.parseInt(st.nextToken());
-			int end = Integer.parseInt(st.nextToken());
-			gragh[start][end] = gragh[end][start] = 1;
-		}
-		visited = new boolean[1001];
-		dfs(V);
-		System.out.println();
-		visited = new boolean[1001];
-		bfs(V);
 		
 	}
+	
+	
 }

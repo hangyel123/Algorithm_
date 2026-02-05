@@ -1,45 +1,57 @@
 import java.util.*;
 import java.io.*;
+
 class Solution {
-    static int[] dx = {-1,1,0,0}; //상하좌우
-    static int[] dy = {0,0,-1,1}; //상하좌우
+    static int[] dx = {-1,1,0,0};
+    static int[] dy = {0,0,-1,1};
     static boolean[][] visited;
     
     
     public int solution(int[][] maps) {
-     
-        int n = maps.length;
-        int m = maps[0].length;
+        int n = maps.length;  //행
+        int m = maps[0].length; //렬
         
         visited = new boolean[n][m];
-
-        return bfs(maps, visited,n ,m );
+        
+         
+        int answer = 0;
+        
+        int[] startpos = {0,0}; 
+        visited[0][0]= true;
+        answer = bfs(startpos, maps, n, m);
+        return answer;
     }
     
-    static int bfs(int[][] maps, boolean[][] visited,int n,int m){
-        visited[0][0] = true;
+    public int bfs(int[] pos, int[][] maps, int n,int m){
+        int xpos = pos[0];
+        int ypos = pos[1];
+        
+        
         ArrayDeque<int[]> q = new ArrayDeque<>();
-        q.offer(new int[]{0,0, 1});
+        q.offer(new int[]{xpos, ypos, 1});
+        
         while(!q.isEmpty()){
-            int[] pos = q.poll();
-            int xpos = pos[0];
-            int ypos = pos[1];
-            int dist = pos[2];
+            int[] cpos = q.poll();
+            int xcpos = cpos[0];
+            int ycpos = cpos[1];
+            int cnt = cpos[2];
             
-            if(xpos== n-1 && ypos == m-1) return dist;
-            for(int d = 0;d<4;d++){
-                int nx = xpos +dx[d];
-                int ny = ypos +dy[d];
+            if(xcpos == n -1 && ycpos == m-1){
+                return cnt;
+            }         
+            for(int d =0;d<4;d++){
+                int xn = xcpos +dx[d];
+                int yn = ycpos +dy[d];
                 
-                if(nx >= 0 && nx < n && ny >= 0 && ny < m && maps[nx][ny] == 1){
-                    if(!visited[nx][ny]){
-                        visited[nx][ny] = true;
-                        q.offer(new int[]{nx,ny,dist+1});
-                    }
+                if(xn >= 0 && xn < n && yn >= 0 && yn < m && maps[xn][yn] == 1 && !visited[xn][yn]){
+                    visited[xn][yn] = true;
+                    q.offer(new int[]{xn,yn,cnt+1});
                 }
             }
+        
+            
         }
-        return -1;
+        return -1;    
     }
     
 }
